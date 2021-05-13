@@ -27,6 +27,7 @@ function myFunction() {
         const cityName = document.getElementById("city").value;
         const countryName = document.getElementById("country").value;
        
+        // 1. FETCH na získanie šírky a dĺžky
         fetch('https://api.opencagedata.com/geocode/v1/json?key='+ KEY + '&q=' + cityName+'+'+countryName  + '&pretty=1')
             
                 .then(resp => {
@@ -52,6 +53,7 @@ function myFunction() {
                         var lng = json.results[1].geometry.lng;
                         console.log(lng);
    
+   // druhý FETCH PREDPOVEĎ na základe dlžky a šírky             
    fetch('http://api.weatherstack.com/forecast?access_key=' + novyKEY+ '&query=' + lat+', '+lng)
     
         .then(resp => {
