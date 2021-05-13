@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="mystyle.css">
+        </head>
+<body>
+
+<h1>Simple Weather App</h1>
+
+<input type="text" id="city" value="Kosice">
+<input type="text" id="country" value="Slovakia">
+
+
+
+<button onclick="myFunction()">SUBMIT</button>
+<div>
+    <p id="mestoakrajina"></p>
+    <p id="temp"></p>
+    <p id="ikona"></p> 
+    <p id="demo"></p>
+</div>
+
+<script>
+function myFunction() {
+ 
+        const KEY = '3ae079c2e87e4daaba3ea2f582ac3ab7';
+        const cityName = document.getElementById("city").value;
+        const countryName = document.getElementById("country").value;
+       
+        fetch('https://api.opencagedata.com/geocode/v1/json?key='+ KEY + '&q=' + cityName+'+'+countryName  + '&pretty=1')
+            
+                .then(resp => {
+                    if (!resp.ok) {
+                        return (resp.statusText + " " + resp.status)
+                    } else {
+                        return resp.json()
+                    }
+                })
+                .then(json => {
+                        // názov mesta a krajiny
+                        var mesto = json.results[0].components.city; 
+                        var krajina = json.results[0].components.country;
+                        console.log(mesto)
+                        console.log(krajina)
+                        document.getElementById("mestoakrajina").innerHTML=mesto+' '+krajina;
+
+
+                        // súradnice mesta v krajine
+                        const novyKEY = '1c7e97c2c8cc8ee9587b0136a6bee009';
+                        var lat = json.results[1].geometry.lat;
+                        console.log(lat);
+                        var lng = json.results[1].geometry.lng;
+                        console.log(lng);
+   
+   fetch('http://api.weatherstack.com/forecast?access_key=' + novyKEY+ '&query=' + lat+', '+lng)
+    
+        .then(resp => {
+            if (!resp.ok) {
+                return (resp.statusText + " " + resp.status)
+            } else {
+                return resp.json()
+            }
+        })
+        .then(json => {
+
+            // teplota, popis počasia
+            document.getElementById("temp").innerHTML = (json.current.temperature +"°C")
+            document.getElementById("demo").innerHTML = (json.current.weather_descriptions[0] +"<br>")
+
+            //ikonka
+            //document.getElementById("ikonka").innerHTML = (json.current.weather_icons[0]);
+            let ikonka = json.current.weather_icons[0];
+            var img = document.createElement('img');
+            img.src = ikonka;
+           
+            document.getElementById('ikona').appendChild(img); 
+            
+            
+              
+            
+        })
+        .catch(error => {
+            console.log(error)
+        });
+
+
+
+
+
+
+
+
+
+                    // document.getElementById("lat").innerHTML = json.results[1].geometry.lat;
+                    // document.getElementById("lng").innerHTML = json.results[1].geometry.lng;
+                    //   document.getElementById("demo").value = (json.results[1].geometry.lat +', '+ json.results[1].geometry.lng);
+                    //   var lat = json.results[1].geometry.lat;
+                    //   console.log(lat);
+                    //   var lng = json.results[1].geometry.lng;
+                    //   console.log(lng);
+                })
+                .catch(error => {
+                    console.log(error)
+                });
+                
+//////////////////////ú
+
+        
+}
+
+
+
+
+
+</script>
+
+</body>
+</html>
